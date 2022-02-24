@@ -1,0 +1,10 @@
+---
+- hosts: JenkinsEC2
+  tasks:
+    - name: Task - 1 Git checkout maven repo
+      become: true
+      git: repo=https://github.com/daticahealth/java-tomcat-maven-example.git
+        dest=/my-mvn-project/ accept_hostkey=yes
+
+    - name: Task - 2 maven clean package
+      command: mvn -f /my-mvn-project/pom.xml clean package     
