@@ -1,5 +1,6 @@
 ---
 - hosts: JenkinsEC2
+  ignore_unreachable: yes
   tasks:
     - name: Task - 1 Git checkout maven repo
       become: true
