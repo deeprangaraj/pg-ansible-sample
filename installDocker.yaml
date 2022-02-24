@@ -1,6 +1,6 @@
 ---
 - hosts: DockerHost
-  
+  become_user: ubuntu 
   become: yes
   tasks:
 
