@@ -3,7 +3,9 @@
   become: yes
   become_method: sudo
   tasks:
-
+          
+  vars:
+     user_name: ubuntu        
   # Install Docker
   # --
   # 
@@ -34,7 +36,7 @@
       update_cache: yes
 
   - name: add userpermissions
-    shell: "usermod -aG docker {{ lookup('env','USER') }}"
+    shell: "usermod -aG docker {{ user_name }}"
 
   # Installs Docker SDK
   # --
@@ -44,7 +46,7 @@
       name: python3-pip
   
   - name: install python sdk
-    become_user: "{{ lookup('env','USER') }}"
+    become_user: "{{ user_name }}"
     pip:
       name:
         - docker
