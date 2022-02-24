@@ -2,10 +2,11 @@
 - hosts: DockerHost
   become: yes
   become_method: sudo
-  tasks:
-          
   vars:
      user_name: ubuntu        
+  
+  tasks:
+          
   # Install Docker
   # --
   # 
