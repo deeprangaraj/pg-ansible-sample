@@ -1,5 +1,7 @@
 ---
-- hosts: JenkinsEC2
+- name: Compile Sample Web Application
+  hosts: 127.0.0.1
+  connection: local 
   tasks:
     - name: Delete content & directory
       become: true
@@ -7,11 +9,11 @@
         path: /my-mvn-project/
         state: absent
     
-    - name: Task - 1 Git checkout maven repo
+    - name: Checkout Sample Web Application Repo 
       become: true
       git: repo=https://github.com/deeprangaraj/SampleWebApp.git
         dest=/my-mvn-project/ accept_hostkey=yes
 
-    - name: Task - 2 maven clean package
+    - name: Build Sample Web Application Repo Package
       become: true
       command: mvn -f /my-mvn-project/pom.xml clean package
