@@ -2,7 +2,32 @@
 - name: Compile Sample Web Application
   hosts: 127.0.0.1
   connection: local 
+  
   tasks:
+
+    - name: Update APT package manager repositories cache
+      become: true
+      apt:
+        update_cache: yes
+
+    - name: Install Java using Ansible
+      become: true
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+           - openjdk-11-jdk
+
+    - name: Install Maven using Ansible
+      become: true
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+           - maven
+
     - name: Delete content & directory
       become: true
       file:
