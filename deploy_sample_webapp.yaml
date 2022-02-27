@@ -1,0 +1,31 @@
+---
+- name: Bringup docker container
+  hosts: DockerHost
+  become: true
+  become_method: sudo
+  vars:
+    - dockerfile_folder: "Docker"
+    - docker_image_name: "test_img"
+    - docker_container_name: "test_os"
+    - patting_ssh_port: "2222"
+    - patting_http_post: "8080"
+
+  tasks:
+    - name: "Build dockerimage from Dockerfile"
+      docker_image:
+        name: "{{ docker_image_name}}"
+        build:
+           pull: yes
+           path: "/{{ dockerfile_folder }}"
+        state: present
+        source: build
+
+    - name: "Launch docker container"
+      docker_container: 
+        name: "{{ docker_container_name }}"
+        image: "{{ docker_image_name }}"
+        state: started
+        ports:
+        - "{{patting_ssh_port}}:22"
+        - "{{patting_http_post}}:8080"
+      register: docker_info
