@@ -1,11 +1,17 @@
 ---
 - hosts: JenkinsEC2
-  ignore_unreachable: yes
   tasks:
+    - name: Delete content & directory
+      become: true
+      file:
+        path: /my-mvn-project/
+        state: absent
+    
     - name: Task - 1 Git checkout maven repo
       become: true
-      git: repo=https://github.com/daticahealth/java-tomcat-maven-example.git
+      git: repo=https://github.com/deeprangaraj/SampleWebApp.git
         dest=/my-mvn-project/ accept_hostkey=yes
 
     - name: Task - 2 maven clean package
-      command: mvn -f /my-mvn-project/pom.xml clean package     
+      become: true
+      command: mvn -f /my-mvn-project/pom.xml clean package
