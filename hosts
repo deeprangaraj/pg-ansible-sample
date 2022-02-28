@@ -1,2 +1,5 @@
 [DockerHost]
 DocHost ansible_host=172.31.18.150 ansible_user=ubuntu 
+
+[JenkinsEC2]
+JEC2 ansible_host=172.31.19.101 ansible_user=ubuntu
