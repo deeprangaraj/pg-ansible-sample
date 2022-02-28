@@ -1,8 +1,6 @@
 ---
 - name: Compile Sample Web Application
-  hosts: 127.0.0.1
-  connection: local 
-  
+  hosts: DockerHost
   tasks:
 
     - name: Update APT package manager repositories cache
@@ -42,3 +40,7 @@
     - name: Build Sample Web Application Repo Package
       become: true
       command: mvn -f /my-mvn-project/pom.xml clean package
+
+    - name: Copy the project war file into Docker folder
+      become: true
+      command: cp /my-mvn-project/target/SampleWebApp.war /my-mvn-project/Docker  
