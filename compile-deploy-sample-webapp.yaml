@@ -1,0 +1,81 @@
+---
+- name: Compile and Deploy Sample Web Application in docker container
+  hosts: DockerHost
+  become_method: sudo
+  vars:
+    allow_world_readable_tmpfiles: true 
+  tasks:
+    - name: Update APT package manager repositories cache
+      become: true
+      apt: update_cache=yes force_apt_get=yes
+
+    - name: Install Java using Ansible
+      become: true
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+           - openjdk-11-jdk
+
+    - name: Install Maven using Ansible
+      become: true
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+           - maven
+
+    - name: Delete content & directory
+      become: true
+      file:
+        path: /my-mvn-project/
+        state: absent
+    
+    - name: Checkout Sample Web Application Repo 
+      become: true
+      git: repo=https://github.com/deeprangaraj/SampleWebApp.git
+        dest=/my-mvn-project/ accept_hostkey=yes
+
+    - name: Build Sample Web Application Repo Package
+      become: true
+      command: mvn -f /my-mvn-project/pom.xml clean package
+    
+    - name: Copy the project war file into Docker folder
+      become: true
+      command: cp /my-mvn-project/target/SampleWebApp.war /my-mvn-project/Docker  
+   
+
+
+- name: Bringup docker container
+  hosts: DockerHost
+  become: true
+  become_method: sudo
+  vars:
+    - dockerfile_folder: "Docker"
+    - docker_image_name: "test_img"
+    - docker_container_name: "test_os"
+    - patting_ssh_port: "2222"
+    - patting_http_post: "8080"
+
+  tasks:
+    - name: "Build dockerimage from Dockerfile"
+      docker_image:
+        name: "{{ docker_image_name}}"
+        build:
+           pull: yes
+           path: "/my-mvn-project/{{ dockerfile_folder }}"
+        state: present
+        source: build
+
+    - name: "Launch docker container"
+      docker_container:
+        name: "{{ docker_container_name }}"
+        image: "{{ docker_image_name }}"
+        state: started
+        ports:
+        - "{{patting_ssh_port}}:22"
+        - "{{patting_http_post}}:8080"
+      register: docker_info
+ 
